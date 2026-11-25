@@ -17,8 +17,9 @@ BEEHIIV_FORM = '555f4204-f902-49b1-97fd-2a1af6e33046'
 
 os.makedirs(ROOT, exist_ok=True)
 for d in ['assets/img/a1', 'assets/img/a2', 'assets/img/a3', 'assets/brand', 'assets/img/reports',
+          'assets/downloads',
           'verify-1688-supplier', 'us-import-data-buyers', 'chinese-suv-landed-cost',
-          'who-supplies-americas-plastics', 'who-supplies-americas-furniture']:
+          'who-supplies-americas-plastics', 'who-supplies-americas-furniture', 'thanks']:
     os.makedirs(os.path.join(ROOT, d), exist_ok=True)
 
 # ---------- brand assets ----------
@@ -62,6 +63,14 @@ HEADER = f'''<header class="site-header">
 
 SUBSCRIBE = f'''<section class="subscribe-quiet">
 <p>If this was useful — one free China sourcing brief a week, with the new research:</p>
+<script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="{BEEHIIV_FORM}"></script>
+</section>'''
+
+def datapack_block(pack_file, pack_desc):
+    return f'''<section class="subscribe-quiet">
+<h2 style="color:var(--navy);font-size:20px;margin:0 0 8px">Get the data pack</h2>
+<p>{pack_desc}</p>
+<p class="small">Subscribe to the free weekly brief and the pack is sent to your inbox automatically. Already subscribed? It is in your welcome email.</p>
 <script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="{BEEHIIV_FORM}"></script>
 </section>'''
 
@@ -274,7 +283,7 @@ def dossier_body(path):
                      content, flags=re.S)
     return content.strip()
 
-def report_page(slug, title, lede, body_html, desc, date, og_img, others):
+def report_page(slug, title, lede, body_html, desc, date, og_img, others, pack_file, pack_desc):
     more = '\n'.join(f'<li><a href="{BASE}/{s}/">{t}</a></li>' for s, t in others)
     return f'''{head(title + ' — Tavino', desc, f'/{slug}/', og_img, {'headline': title, 'date': date})}
 <body>
@@ -289,24 +298,55 @@ def report_page(slug, title, lede, body_html, desc, date, og_img, others):
 </div>
 </article>
 <section class="more"><h2>More Tavino research</h2><ul>{more}</ul></section>
-{SUBSCRIBE}
+{datapack_block(pack_file, pack_desc)}
 </main>
 {FOOTER}'''
 
 CS = os.path.join(VA, 'combined-sample')
 shutil.copy(os.path.join(CS, 'chart-kg-test.png'), os.path.join(ROOT, 'assets/img/reports/kg-test.png'))
+# data packs (email-gated lead magnets; links go out via the Beehiiv welcome email)
+for z in ['tavino-dossier-ep1-plastics-data.zip', 'tavino-dossier-ep2-furniture-data.zip']:
+    shutil.copy(os.path.join(ROOT, 'downloads-src', z), os.path.join(ROOT, 'assets/downloads', z))
 r1_body = dossier_body(os.path.join(CS, 'sample-hs3925-3926.html'))
 r2_body = dossier_body(os.path.join(CS, 'sample-hs9401-9403-furniture.html'))
 R1_LEDE = 'US import records (demand side) × China-side identity check (supply side) — HS 3925 & 3926, US sea bills of lading, Jan 2015 – Nov 2026. Episode 1 of the Two-Sided Dossier series.'
 R2_LEDE = 'US import records (demand side) × China-side identity check (supply side) — HS 9401 (seats) & HS 9403 (other furniture). Episode 2 of the Two-Sided Dossier series.'
+PACK1 = 'The full data pack for this episode — the 9 identified shippers with verdicts and evidence, the real US buyers, and the PVC-blinds price band — as CSVs with a sources README.'
+PACK2 = 'The full data pack for this episode — the 8 identified shippers with verdicts and evidence, the top-10 US importers for HS 9401 and HS 9403, and the Anji chair price band — as CSVs with a sources README.'
 with open(os.path.join(ROOT, 'who-supplies-americas-plastics/index.html'), 'w') as f:
     f.write(report_page(R1[0], R1[1], R1_LEDE, r1_body, D4, '2026-11-25',
                         'assets/img/a2/cover.png',
-                        [(R2[0], R2[1]), (A2[0], t2), (A1[0], t1_title), (A3[0], t3)]))
+                        [(R2[0], R2[1]), (A2[0], t2), (A1[0], t1_title), (A3[0], t3)],
+                        'tavino-dossier-ep1-plastics-data.zip', PACK1))
 with open(os.path.join(ROOT, 'who-supplies-americas-furniture/index.html'), 'w') as f:
     f.write(report_page(R2[0], R2[1], R2_LEDE, r2_body, D5, '2026-11-26',
                         'assets/img/reports/kg-test.png',
-                        [(R1[0], R1[1]), (A2[0], t2), (A1[0], t1_title), (A3[0], t3)]))
+                        [(R1[0], R1[1]), (A2[0], t2), (A1[0], t1_title), (A3[0], t3)],
+                        'tavino-dossier-ep2-furniture-data.zip', PACK2))
+
+# ---------- Thanks page (post-subscribe landing; not indexed, not in sitemap) ----------
+thanks_head = head('Thanks — your data packs — Tavino',
+                   'Thanks for subscribing. Your Tavino data packs are here.',
+                   '/thanks/', 'assets/img/reports/kg-test.png')
+thanks_head = thanks_head.replace('</head>', '<meta name="robots" content="noindex">\n</head>')
+thanks = f'''{thanks_head}
+<body>
+{HEADER}
+<main>
+<article>
+<p class="meta">Tavino research</p>
+<h1>You're in — here are your data packs</h1>
+<p class="lede">Both episode packs, as CSVs with a sources README. Save them now; they are also in your welcome email.</p>
+<ul>
+<li><a href="{BASE}/assets/downloads/tavino-dossier-ep2-furniture-data.zip">Furniture data pack (HS 9401/9403)</a> — 8 identified shippers, top-10 US importers, Anji chair price band</li>
+<li><a href="{BASE}/assets/downloads/tavino-dossier-ep1-plastics-data.zip">Plastics data pack (HS 3925/3926)</a> — 9 identified shippers, real US buyers, PVC-blinds price band</li>
+</ul>
+<p><a href="{BASE}/">← Back to the research</a></p>
+</article>
+</main>
+{FOOTER}'''
+with open(os.path.join(ROOT, 'thanks/index.html'), 'w') as f:
+    f.write(thanks)
 
 # ---------- Homepage ----------
 cards = ''
