@@ -14,6 +14,14 @@ CE = os.path.expanduser('~/workspace/tavino-car-export')
 BRAND = os.path.expanduser('~/workspace/tavino-brand')
 BASE = 'https://tavinosourcing.com'
 BEEHIIV_FORM = '555f4204-f902-49b1-97fd-2a1af6e33046'
+CLARITY_ID = 'zjh5mut81j'
+CLARITY = f'''<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){{
+        c[a]=c[a]||function(){{(c[a].q=c[a].q||[]).push(arguments)}};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    }})(window, document, "clarity", "script", "{CLARITY_ID}");
+</script>'''
 
 os.makedirs(ROOT, exist_ok=True)
 for d in ['assets/img/a1', 'assets/img/a2', 'assets/img/a3', 'assets/brand', 'assets/img/reports',
@@ -55,6 +63,7 @@ def head(title, desc, path, og_img, article=None):
 <link rel="icon" href="{BASE}/assets/brand/favicon.ico">
 <link rel="stylesheet" href="{BASE}/style.css">
 {ld}
+{CLARITY}
 </head>'''
 
 HEADER = f'''<header class="site-header">
@@ -74,6 +83,29 @@ def datapack_block(pack_file, pack_desc):
 <p class="small">Subscribe to the free weekly brief and the pack is sent to your inbox automatically. Already subscribed? It is in your welcome email.</p>
 <script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="{BEEHIIV_FORM}"></script>
 </section>'''
+
+def clarity_track_script(ep):
+    """Clarity custom event for the data-pack claim block on report pages.
+    Fires datapack_click_epN on: a click anywhere inside the claim block, a
+    click on any direct ZIP download link, and focus entering the embedded
+    Beehiiv form (cross-origin iframe — its submit cannot be hooked directly,
+    so iframe focus is the closest reliable intent signal)."""
+    return f'''<script>
+(function(){{
+  function fire(){{ if (window.clarity) clarity("event", "datapack_click_{ep}"); }}
+  document.addEventListener("click", function(e){{
+    if (!e.target.closest) return;
+    if (e.target.closest('a[href*="/assets/downloads/"]')) {{ fire(); return; }}
+    if (e.target.closest("section.subscribe-quiet")) fire();
+  }});
+  window.addEventListener("blur", function(){{
+    setTimeout(function(){{
+      var el = document.activeElement;
+      if (el && el.tagName === "IFRAME") fire();
+    }}, 0);
+  }});
+}})();
+</script>'''
 
 FOOTER = f'''<footer class="site-footer">
 <p>© 2026 Tavino LLC · China sourcing, verified.</p>
@@ -308,6 +340,7 @@ def dossier_body(path):
     return content.strip()
 
 def report_page(slug, title, lede, body_html, desc, date, og_img, others, pack_file, pack_desc):
+    ep = re.search(r'(ep\d)', pack_file).group(1)
     more = '\n'.join(f'<li><a href="{BASE}/{s}/">{t}</a></li>' for s, t in others)
     return f'''{head(title + ' — Tavino', desc, f'/{slug}/', og_img, {'headline': title, 'date': date})}
 <body>
@@ -323,6 +356,7 @@ def report_page(slug, title, lede, body_html, desc, date, og_img, others, pack_f
 </article>
 <section class="more"><h2>More Tavino research</h2><ul>{more}</ul></section>
 {datapack_block(pack_file, pack_desc)}
+{clarity_track_script(ep)}
 </main>
 {FOOTER}'''
 
@@ -378,6 +412,14 @@ thanks = f'''{thanks_head}
 <p><a href="{BASE}/">← Back to the research</a></p>
 </article>
 </main>
+<script>
+document.addEventListener("click", function(e){{
+  var a = e.target.closest ? e.target.closest('a[href*="/assets/downloads/"]') : null;
+  if (!a || !window.clarity) return;
+  var m = (a.getAttribute("href") || "").match(/ep(\d)/);
+  clarity("event", "datapack_click_ep" + (m ? m[1] : "x"));
+}});
+</script>
 {FOOTER}'''
 with open(os.path.join(ROOT, 'thanks/index.html'), 'w') as f:
     f.write(thanks)
