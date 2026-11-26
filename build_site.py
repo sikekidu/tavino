@@ -19,7 +19,8 @@ os.makedirs(ROOT, exist_ok=True)
 for d in ['assets/img/a1', 'assets/img/a2', 'assets/img/a3', 'assets/brand', 'assets/img/reports',
           'assets/downloads',
           'verify-1688-supplier', 'us-import-data-buyers', 'chinese-suv-landed-cost',
-          'who-supplies-americas-plastics', 'who-supplies-americas-furniture', 'thanks']:
+          'who-supplies-americas-plastics', 'who-supplies-americas-furniture',
+          'who-supplies-americas-auto-parts', 'thanks']:
     os.makedirs(os.path.join(ROOT, d), exist_ok=True)
 
 # ---------- brand assets ----------
@@ -247,25 +248,27 @@ D2 = 'The top of the US import record is freight forwarders, not buyers. What 12
 D3 = 'The same $8,900 Chery costs $10,910 landed in Dubai and $15,020 in Lagos. Six best-selling Chinese export models priced across three markets: FOB plus freight plus the full duty and tax stack.'
 D4 = 'Eight of the nine biggest China-side "suppliers" of US plastic goods are logistics shells — forwarders, NVOCCs and parcel fronts. Exactly one is a real factory. Episode 1 of the Two-Sided Dossier: HS 3925/3926.'
 D5 = 'Four of the eight biggest China/HK "suppliers" of US furniture are parcel consolidators holding ~86% of the bills — and the #1 averages 2.6 kg per "metal furniture" shipment. Episode 2 of the Two-Sided Dossier: HS 9401/9403.'
+D6 = 'Six of the eight biggest China/HK "suppliers" of US auto parts are real factories holding 61% of the bill volume — and the #1 name is Advance Auto Parts\' own offshore buying desk, shipping 19-tonne containers. The only parcel shell holds just 13.7%. Episode 3 of the Two-Sided Dossier: HS 8708.'
 
 A1 = ('verify-1688-supplier', t1_title, D1, '2026-11-23')
 A2 = ('us-import-data-buyers', t2, D2, '2026-11-25')
 A3 = ('chinese-suv-landed-cost', t3, D3, '2026-11-25')
 R1 = ('who-supplies-americas-plastics', "Who Really Supplies America's Plastic Goods?", D4, '2026-11-25')
 R2 = ('who-supplies-americas-furniture', "Who Really Supplies America's Furniture?", D5, '2026-11-26')
+R3 = ('who-supplies-americas-auto-parts', "Who Really Supplies America's Auto Parts?", D6, '2026-11-26')
 
 with open(os.path.join(ROOT, 'verify-1688-supplier/index.html'), 'w') as f:
     f.write(article_page(A1[0], t1_title, lede1, body1, D1, '2026-11-23',
                          'assets/img/a1/img-1.jpg',
-                         [(R2[0], R2[1]), (R1[0], R1[1]), (A2[0], t2), (A3[0], t3)]))
+                         [(R3[0], R3[1]), (R2[0], R2[1]), (R1[0], R1[1]), (A2[0], t2), (A3[0], t3)]))
 with open(os.path.join(ROOT, 'us-import-data-buyers/index.html'), 'w') as f:
     f.write(article_page(A2[0], t2, l2, b2, D2, '2026-11-25',
                          'assets/img/a2/cover.png',
-                         [(R2[0], R2[1]), (R1[0], R1[1]), (A1[0], t1_title), (A3[0], t3)]))
+                         [(R3[0], R3[1]), (R2[0], R2[1]), (R1[0], R1[1]), (A1[0], t1_title), (A3[0], t3)]))
 with open(os.path.join(ROOT, 'chinese-suv-landed-cost/index.html'), 'w') as f:
     f.write(article_page(A3[0], t3, l3, b3, D3, '2026-11-25',
                          'assets/img/a3/cover.png',
-                         [(R2[0], R2[1]), (R1[0], R1[1]), (A1[0], t1_title), (A2[0], t2)]))
+                         [(R3[0], R3[1]), (R2[0], R2[1]), (R1[0], R1[1]), (A1[0], t1_title), (A2[0], t2)]))
 
 # ---------- Two-Sided Dossier reports (body extracted from the定版 samples) ----------
 def dossier_body(path):
@@ -305,24 +308,33 @@ def report_page(slug, title, lede, body_html, desc, date, og_img, others, pack_f
 CS = os.path.join(VA, 'combined-sample')
 shutil.copy(os.path.join(CS, 'chart-kg-test.png'), os.path.join(ROOT, 'assets/img/reports/kg-test.png'))
 # data packs (email-gated lead magnets; links go out via the Beehiiv welcome email)
-for z in ['tavino-dossier-ep1-plastics-data.zip', 'tavino-dossier-ep2-furniture-data.zip']:
+for z in ['tavino-dossier-ep1-plastics-data.zip', 'tavino-dossier-ep2-furniture-data.zip',
+          'tavino-dossier-ep3-autoparts-data.zip']:
     shutil.copy(os.path.join(ROOT, 'downloads-src', z), os.path.join(ROOT, 'assets/downloads', z))
 r1_body = dossier_body(os.path.join(CS, 'sample-hs3925-3926.html'))
 r2_body = dossier_body(os.path.join(CS, 'sample-hs9401-9403-furniture.html'))
+r3_body = dossier_body(os.path.join(CS, 'sample-hs8708-autoparts.html'))
 R1_LEDE = 'US import records (demand side) × China-side identity check (supply side) — HS 3925 & 3926, US sea bills of lading, Jan 2015 – Nov 2026. Episode 1 of the Two-Sided Dossier series.'
 R2_LEDE = 'US import records (demand side) × China-side identity check (supply side) — HS 9401 (seats) & HS 9403 (other furniture). Episode 2 of the Two-Sided Dossier series.'
 PACK1 = 'The full data pack for this episode — the 9 identified shippers with verdicts and evidence, the real US buyers, and the PVC-blinds price band — as CSVs with a sources README.'
 PACK2 = 'The full data pack for this episode — the 8 identified shippers with verdicts and evidence, the top-10 US importers for HS 9401 and HS 9403, and the Anji chair price band — as CSVs with a sources README.'
+R3_LEDE = 'US import records (demand side) × China-side identity check (supply side) — HS 8708 (parts and accessories of motor vehicles). Episode 3 of the Two-Sided Dossier series.'
+PACK3 = 'The full data pack for this episode — the 8 identified shippers with verdicts and evidence (plus the names just below the cut), the top-10 US importers for HS 8708, and the brake-disc price band — as CSVs with a sources README.'
 with open(os.path.join(ROOT, 'who-supplies-americas-plastics/index.html'), 'w') as f:
     f.write(report_page(R1[0], R1[1], R1_LEDE, r1_body, D4, '2026-11-25',
                         'assets/img/a2/cover.png',
-                        [(R2[0], R2[1]), (A2[0], t2), (A1[0], t1_title), (A3[0], t3)],
+                        [(R3[0], R3[1]), (R2[0], R2[1]), (A2[0], t2), (A1[0], t1_title), (A3[0], t3)],
                         'tavino-dossier-ep1-plastics-data.zip', PACK1))
 with open(os.path.join(ROOT, 'who-supplies-americas-furniture/index.html'), 'w') as f:
     f.write(report_page(R2[0], R2[1], R2_LEDE, r2_body, D5, '2026-11-26',
                         'assets/img/reports/kg-test.png',
-                        [(R1[0], R1[1]), (A2[0], t2), (A1[0], t1_title), (A3[0], t3)],
+                        [(R3[0], R3[1]), (R1[0], R1[1]), (A2[0], t2), (A1[0], t1_title), (A3[0], t3)],
                         'tavino-dossier-ep2-furniture-data.zip', PACK2))
+with open(os.path.join(ROOT, 'who-supplies-americas-auto-parts/index.html'), 'w') as f:
+    f.write(report_page(R3[0], R3[1], R3_LEDE, r3_body, D6, '2026-11-26',
+                        'assets/img/a2/cover.png',
+                        [(R2[0], R2[1]), (R1[0], R1[1]), (A2[0], t2), (A1[0], t1_title), (A3[0], t3)],
+                        'tavino-dossier-ep3-autoparts-data.zip', PACK3))
 
 # ---------- Thanks page (post-subscribe landing; not indexed, not in sitemap) ----------
 thanks_head = head('Thanks — your data packs — Tavino',
@@ -336,8 +348,9 @@ thanks = f'''{thanks_head}
 <article>
 <p class="meta">Tavino research</p>
 <h1>You're in — here are your data packs</h1>
-<p class="lede">Both episode packs, as CSVs with a sources README. Save them now; they are also in your welcome email.</p>
+<p class="lede">All episode packs, as CSVs with a sources README. Save them now; they are also in your welcome email.</p>
 <ul>
+<li><a href="{BASE}/assets/downloads/tavino-dossier-ep3-autoparts-data.zip">Auto parts data pack (HS 8708)</a> — 8 identified shippers, top-10 US importers, brake-disc price band</li>
 <li><a href="{BASE}/assets/downloads/tavino-dossier-ep2-furniture-data.zip">Furniture data pack (HS 9401/9403)</a> — 8 identified shippers, top-10 US importers, Anji chair price band</li>
 <li><a href="{BASE}/assets/downloads/tavino-dossier-ep1-plastics-data.zip">Plastics data pack (HS 3925/3926)</a> — 9 identified shippers, real US buyers, PVC-blinds price band</li>
 </ul>
@@ -351,6 +364,7 @@ with open(os.path.join(ROOT, 'thanks/index.html'), 'w') as f:
 # ---------- Homepage ----------
 cards = ''
 for slug, t, d, img in [
+    (R3[0], R3[1], D6, 'assets/img/a2/cover.png'),
     (R2[0], R2[1], D5, 'assets/img/reports/kg-test.png'),
     (R1[0], R1[1], D4, 'assets/img/a2/chart-clean.png'),
     (A2[0], t2, D2, 'assets/img/a2/cover.png'),
@@ -382,7 +396,7 @@ with open(os.path.join(ROOT, 'index.html'), 'w') as f:
     f.write(home)
 
 # ---------- sitemap + robots ----------
-urls = ['/', '/who-supplies-americas-furniture/', '/who-supplies-americas-plastics/',
+urls = ['/', '/who-supplies-americas-auto-parts/', '/who-supplies-americas-furniture/', '/who-supplies-americas-plastics/',
         '/verify-1688-supplier/', '/us-import-data-buyers/', '/chinese-suv-landed-cost/']
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
 for u in urls:
