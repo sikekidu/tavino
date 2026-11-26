@@ -116,6 +116,22 @@ article a{color:var(--navy)}
 .more{max-width:720px;margin:30px auto 0;font-family:system-ui,sans-serif}
 .more h2{color:var(--navy);font-size:20px}
 .more li{margin:6px 0}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin:42px 0 2px;border-bottom:3px solid var(--amber);padding-bottom:6px}
+.sec-head h2{color:var(--navy);margin:0;font-size:24px}
+.sec-head .sec-note{color:var(--mut);font-size:13.5px;white-space:nowrap}
+.card .cover-art{background:var(--navy);color:var(--paper);height:170px;display:flex;flex-direction:column;justify-content:center;padding:18px 20px 18px 26px;position:relative;overflow:hidden}
+.card .cover-art:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--amber)}
+.cover-art .ca-kicker{display:block;font-size:11.5px;letter-spacing:2.2px;font-weight:700;color:var(--amber);text-transform:uppercase;margin-bottom:6px}
+.cover-art .ca-big{display:block;font-size:44px;font-weight:800;line-height:1.05;color:#fff}
+.cover-art .ca-line{display:block;font-size:13.5px;color:#c9d4e2;margin-top:7px;line-height:1.45}
+.card .ep-tag{display:inline-block;background:var(--amber);color:#231a00;font-size:11.5px;font-weight:700;border-radius:20px;padding:2px 10px;margin-bottom:8px;letter-spacing:.4px}
+.card.featured{margin-top:28px}
+.card.featured .cover-art{height:250px;padding:26px 32px 26px 38px}
+.card.featured .cover-art .ca-big{font-size:66px}
+.card.featured .cover-art .ca-line{font-size:15.5px}
+.card.featured h3{font-size:25px}
+.card.featured p{font-size:15.5px}
+@media (max-width:640px){.card.featured .cover-art{height:210px;padding:22px 24px 22px 30px}.card.featured .cover-art .ca-big{font-size:48px}.cover-art .ca-big{font-size:38px}.sec-head .sec-note{white-space:normal}}
 .site-footer{border-top:1px solid var(--line);margin-top:44px;padding:22px 20px;text-align:center;color:var(--mut);font-size:14px}
 .site-footer a{color:var(--navy)}
 @media (max-width:640px){.hero h1{font-size:32px}article{font-size:18px}}
@@ -211,6 +227,11 @@ t3, l3, b3 = md_article(os.path.join(CE, 'article3/article.md'),
                         f'{BASE}/assets/img/a3', os.path.join(ROOT, 'assets/img/a3'))
 shutil.copy(os.path.join(CE, 'article3/cover.png'), os.path.join(ROOT, 'assets/img/a3/cover.png'))
 
+# Site headlines (2026-11-26 retitle): conclusion-style titles on the site;
+# the markdown sources keep their original Medium headlines.
+t2 = 'The Top of the US Import Record Is Freight Forwarders, Not Buyers'
+t3 = 'A $8,900 Chery Costs $15,020 Landed in Lagos'
+
 # ---------- Article 1: extract body + images from the exact HTML ----------
 src = open(os.path.join(VA, 'medium-v2-img/article-exact.html')).read()
 body = re.search(r'<body[^>]*>(.*)</body>', src, re.S).group(1)
@@ -226,7 +247,7 @@ def a1_img(mm):
     return f'<img src="{BASE}/assets/img/a1/{fn}" alt="{html.escape(alt)}" loading="lazy">'
 # track headings while replacing
 parts = re.split(r'(<h2[^>]*>.*?</h2>)', body, flags=re.S)
-t1_title = 'How to Verify a 1688 Supplier Before You Pay'
+t1_title = 'Verify a 1688 Supplier Before You Pay: A Five-Step Desk Check'
 out = []
 for part in parts:
     hm = re.match(r'<h2[^>]*>(.*?)</h2>', part, re.S)
@@ -253,9 +274,9 @@ D6 = 'Six of the eight biggest China/HK "suppliers" of US auto parts are real fa
 A1 = ('verify-1688-supplier', t1_title, D1, '2026-11-23')
 A2 = ('us-import-data-buyers', t2, D2, '2026-11-25')
 A3 = ('chinese-suv-landed-cost', t3, D3, '2026-11-25')
-R1 = ('who-supplies-americas-plastics', "Who Really Supplies America's Plastic Goods?", D4, '2026-11-25')
-R2 = ('who-supplies-americas-furniture', "Who Really Supplies America's Furniture?", D5, '2026-11-26')
-R3 = ('who-supplies-americas-auto-parts', "Who Really Supplies America's Auto Parts?", D6, '2026-11-26')
+R1 = ('who-supplies-americas-plastics', 'Eight of America\'s Top Plastic-Goods "Suppliers" Are Logistics Shells', D4, '2026-11-25')
+R2 = ('who-supplies-americas-furniture', 'The 2.6-Kilogram Furniture Company', D5, '2026-11-26')
+R3 = ('who-supplies-americas-auto-parts', 'The #1 "Chinese Supplier" of US Auto Parts Is Advance Auto Parts Itself', D6, '2026-11-26')
 
 with open(os.path.join(ROOT, 'verify-1688-supplier/index.html'), 'w') as f:
     f.write(article_page(A1[0], t1_title, lede1, body1, D1, '2026-11-23',
@@ -350,9 +371,9 @@ thanks = f'''{thanks_head}
 <h1>You're in — here are your data packs</h1>
 <p class="lede">All episode packs, as CSVs with a sources README. Save them now; they are also in your welcome email.</p>
 <ul>
-<li><a href="{BASE}/assets/downloads/tavino-dossier-ep3-autoparts-data.zip">Auto parts data pack (HS 8708)</a> — 8 identified shippers, top-10 US importers, brake-disc price band</li>
-<li><a href="{BASE}/assets/downloads/tavino-dossier-ep2-furniture-data.zip">Furniture data pack (HS 9401/9403)</a> — 8 identified shippers, top-10 US importers, Anji chair price band</li>
-<li><a href="{BASE}/assets/downloads/tavino-dossier-ep1-plastics-data.zip">Plastics data pack (HS 3925/3926)</a> — 9 identified shippers, real US buyers, PVC-blinds price band</li>
+<li><a href="{BASE}/who-supplies-americas-auto-parts/">Episode 3 — The #1 "Chinese Supplier" of US Auto Parts Is Advance Auto Parts Itself</a><br><a href="{BASE}/assets/downloads/tavino-dossier-ep3-autoparts-data.zip">Download the auto parts data pack (HS 8708, ZIP)</a> — 8 identified shippers, top-10 US importers, brake-disc price band</li>
+<li><a href="{BASE}/who-supplies-americas-furniture/">Episode 2 — The 2.6-Kilogram Furniture Company</a><br><a href="{BASE}/assets/downloads/tavino-dossier-ep2-furniture-data.zip">Download the furniture data pack (HS 9401/9403, ZIP)</a> — 8 identified shippers, top-10 US importers, Anji chair price band</li>
+<li><a href="{BASE}/who-supplies-americas-plastics/">Episode 1 — Eight of America's Top Plastic-Goods "Suppliers" Are Logistics Shells</a><br><a href="{BASE}/assets/downloads/tavino-dossier-ep1-plastics-data.zip">Download the plastics data pack (HS 3925/3926, ZIP)</a> — 9 identified shippers, real US buyers, PVC-blinds price band</li>
 </ul>
 <p><a href="{BASE}/">← Back to the research</a></p>
 </article>
@@ -362,15 +383,39 @@ with open(os.path.join(ROOT, 'thanks/index.html'), 'w') as f:
     f.write(thanks)
 
 # ---------- Homepage ----------
-cards = ''
-for slug, t, d, img in [
-    (R3[0], R3[1], D6, 'assets/img/a2/cover.png'),
-    (R2[0], R2[1], D5, 'assets/img/reports/kg-test.png'),
-    (R1[0], R1[1], D4, 'assets/img/a2/chart-clean.png'),
-    (A2[0], t2, D2, 'assets/img/a2/cover.png'),
-    (A3[0], t3, D3, 'assets/img/a3/cover.png'),
-    (A1[0], t1_title, D1, 'assets/img/a1/img-1.jpg')]:
-    cards += f'''<a class="card" href="{BASE}/{slug}/"><img src="{BASE}/{img}" alt="{html.escape(t)}"><div><h3>{html.escape(t)}</h3><p>{html.escape(d)}</p></div></a>\n'''
+def cover_art(kicker, big, line):
+    return (f'<div class="cover-art"><span class="ca-kicker">{html.escape(kicker)}</span>'
+            f'<span class="ca-big">{html.escape(big)}</span>'
+            f'<span class="ca-line">{html.escape(line)}</span></div>')
+
+def dossier_card(slug, t, d, ep_label, big, line):
+    return (f'<a class="card" href="{BASE}/{slug}/">{cover_art("Two-Sided Dossier", big, line)}'
+            f'<div><span class="ep-tag">{html.escape(ep_label)}</span>'
+            f'<h3>{html.escape(t)}</h3><p>{html.escape(d)}</p></div></a>\n')
+
+def guide_card(slug, t, d, kicker, big, line):
+    return (f'<a class="card" href="{BASE}/{slug}/">{cover_art(kicker, big, line)}'
+            f'<div><h3>{html.escape(t)}</h3><p>{html.escape(d)}</p></div></a>\n')
+
+featured = (f'<a class="card featured" href="{BASE}/{R3[0]}/">'
+            + cover_art('Two-Sided Dossier · Latest', '6 of 8',
+                        'top suppliers are real factories — a first for this series')
+            + f'<div><span class="ep-tag">Episode 3 · HS 8708</span>'
+              f'<h3>{html.escape(R3[1])}</h3><p>{html.escape(D6)}</p></div></a>\n')
+
+dossier_cards = ''
+dossier_cards += dossier_card(R2[0], R2[1], D5, 'Episode 2 · HS 9401/9403', '2.6 kg',
+                              "average weight of one 'metal furniture' shipment by the #1 shipper")
+dossier_cards += dossier_card(R1[0], R1[1], D4, 'Episode 1 · HS 3925/3926', '8 of 9',
+                              'top shippers are logistics shells, not factories')
+
+guide_cards = ''
+guide_cards += guide_card(A2[0], t2, D2, 'Field note', '12.2M',
+                          'plastic-parts bills of lading in the record — the buyers are not who the ranking says')
+guide_cards += guide_card(A3[0], t3, D3, 'Field note', '$15,020',
+                          'what an $8,900 Chery costs landed in Lagos — FOB, freight and the full tax stack')
+guide_cards += guide_card(A1[0], t1_title, D1, 'Guide', '5 steps',
+                          'the desk check to run on any 1688 supplier before money moves')
 home_desc = 'Tavino researches China sourcing with real data: supplier verification, 1688 price snapshots and US import records. Get the free weekly brief.'
 home = f'''{head('Tavino — China sourcing, verified', home_desc, '/', 'assets/img/a1/img-1.jpg')}
 <body>
@@ -381,9 +426,13 @@ home = f'''{head('Tavino — China sourcing, verified', home_desc, '/', 'assets/
 <p class="lede">We check suppliers, track 1688 prices and read the import record — then publish what the data actually shows.</p>
 </section>
 <section id="research">
-<h2 style="color:var(--navy)">Latest research</h2>
+{featured}
+<div class="sec-head"><h2>The Two-Sided Dossier</h2><span class="sec-note">Episode 3 is featured above</span></div>
 <div class="cards">
-{cards}</div>
+{dossier_cards}</div>
+<div class="sec-head"><h2>Guides &amp; Field Notes</h2></div>
+<div class="cards">
+{guide_cards}</div>
 </section>
 <section class="about">
 <h2>What Tavino does</h2>
