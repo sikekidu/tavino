@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://sikekidu.github.io/tavino/sitemap.xml
+Sitemap: https://tavinosourcing.com/sitemap.xml

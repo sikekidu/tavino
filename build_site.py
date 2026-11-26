@@ -12,7 +12,7 @@ ROOT = os.path.expanduser('~/workspace/tavino-site')
 VA = os.path.expanduser('~/workspace/tavino-verify-agent')
 CE = os.path.expanduser('~/workspace/tavino-car-export')
 BRAND = os.path.expanduser('~/workspace/tavino-brand')
-BASE = 'https://sikekidu.github.io/tavino'
+BASE = 'https://tavinosourcing.com'
 BEEHIIV_FORM = '555f4204-f902-49b1-97fd-2a1af6e33046'
 
 os.makedirs(ROOT, exist_ok=True)
