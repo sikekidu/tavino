@@ -368,6 +368,8 @@ shutil.copy(os.path.join(CS, 'chart-kg-test.png'), os.path.join(ROOT, 'assets/im
 for z in ['tavino-dossier-ep1-plastics-data.zip', 'tavino-dossier-ep2-furniture-data.zip',
           'tavino-dossier-ep3-autoparts-data.zip', 'tavino-dossier-ep4-lighting-data.zip']:
     shutil.copy(os.path.join(ROOT, 'downloads-src', z), os.path.join(ROOT, 'assets/downloads', z))
+shutil.copy(os.path.join(ROOT, 'downloads-src', 'tavino-supplier-check-sample.pdf'),
+            os.path.join(ROOT, 'assets/downloads', 'tavino-supplier-check-sample.pdf'))
 r1_body = dossier_body(os.path.join(CS, 'sample-hs3925-3926.html'))
 r2_body = dossier_body(os.path.join(CS, 'sample-hs9401-9403-furniture.html'))
 r3_body = dossier_body(os.path.join(CS, 'sample-hs8708-autoparts.html'))
@@ -400,6 +402,62 @@ with open(os.path.join(ROOT, 'who-supplies-americas-lighting/index.html'), 'w') 
                         'assets/img/a2/cover.png',
                         [(R3[0], R3[1]), (R2[0], R2[1]), (R1[0], R1[1]), (A2[0], t2), (A1[0], t1_title), (A3[0], t3)],
                         'tavino-dossier-ep4-lighting-data.zip', PACK4))
+
+# ---------- Verify landing page (Supplier Check product; in sitemap) ----------
+PAYHIP_BASIC = 'https://payhip.com/b/pAcZb'
+PAYHIP_FULL = 'https://payhip.com/b/NvbAY'
+PAYHIP_COMPARE = 'https://payhip.com/b/Kw4pP'
+os.makedirs(os.path.join(ROOT, 'verify'), exist_ok=True)
+verify = f'''{head('Verify a Chinese supplier before you pay — Tavino Supplier Check',
+                   'A desk verification of any Chinese supplier: registry cross-check, factory-or-trader determination, red flags and a clear verdict. PDF report in 24–48 hours.',
+                   '/verify/', 'assets/img/reports/kg-test.png')}
+<body>
+{HEADER}
+<main>
+<article>
+<p class="meta">Tavino Supplier Check</p>
+<h1>Before you wire the money, verify the supplier.</h1>
+<p class="lede">Send us a Chinese supplier — a company name or a 1688 shop link. Within 24–48 hours you get a PDF report that says who they really are, what the red flags are, and whether we would pay them. A remote desk check, done from the China side, in English.</p>
+
+<h2>What we check</h2>
+<ul>
+<li><strong>Identity match</strong> — the shop name against the registered legal company behind it.</li>
+<li><strong>Official registry</strong> — registration status, capital, business scope, abnormal-operation and penalty records.</li>
+<li><strong>Factory or trader?</strong> — licence scope, self-description and product structure, cross-checked three ways.</li>
+<li><strong>Platform trade signals</strong> — shop age, transaction tier, repeat-buyer rate, any platform factory-inspection report.</li>
+<li><strong>Records</strong> — litigation and dishonesty listings (Full and Compare).</li>
+<li><strong>Price snapshot</strong> — your target product's dated tier prices and MOQ, positioned against two comparable suppliers (Full and Compare).</li>
+</ul>
+<p>Every report ends with a verdict — <strong>Verified</strong>, <strong>Partially verified</strong>, or <strong>Could not verify</strong> — a red-flag list, and a one-line ordering recommendation. Every number carries its source and date. What we cannot verify, we say so; that is part of the answer.</p>
+
+<h2>See a real report first</h2>
+<p>This is an actual Supplier Check we ran on a Dongguan watch manufacturer, with names and identifiers masked: <a href="{BASE}/assets/downloads/tavino-supplier-check-sample.pdf">download the sample report (PDF)</a>.</p>
+
+<h2>Choose your check</h2>
+<ul>
+<li><strong>Basic — $49.</strong> Registry cross-check, status and penalty records, red-flag screen, verdict. One supplier. <a href="{PAYHIP_BASIC}">Order the Basic check</a></li>
+<li><strong>Full — $79.</strong> Everything in Basic, plus factory-or-trader determination, platform trade signals, litigation and dishonesty records, price snapshot with two comparables, contact details cross-checked against a second source. One supplier. <a href="{PAYHIP_FULL}">Order the Full check</a></li>
+<li><strong>Compare — $149.</strong> The Full check on up to five suppliers for the same product, one comparative report with a ranked recommendation, within 48 hours. <a href="{PAYHIP_COMPARE}">Order the Compare check</a></li>
+</ul>
+
+<h2>How it works</h2>
+<ul>
+<li>1. Order above — checkout is handled by Payhip.</li>
+<li>2. Email your supplier's company name and/or 1688 shop link, plus the product you plan to buy, to <strong>tavino@muse.ai</strong>.</li>
+<li>3. Your report lands in your inbox within 24–48 hours of us receiving the details.</li>
+</ul>
+<p class="small">Scope, stated plainly: this is a remote desk verification based on platform records, public registries and the supplier's public materials. It is not an on-site factory audit and does not replace one — it is the check you run before an audit (or a deposit) is worth paying for.</p>
+
+<section class="subscribe-quiet">
+<h2 style="color:var(--navy);font-size:20px;margin:0 0 8px">Not ordering yet?</h2>
+<p>Subscribe to the free weekly brief — the same research, published as we find it.</p>
+<script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="{BEEHIIV_FORM}"></script>
+</section>
+</article>
+</main>
+{FOOTER}'''
+with open(os.path.join(ROOT, 'verify/index.html'), 'w') as f:
+    f.write(verify)
 
 # ---------- Thanks page (post-subscribe landing; not indexed, not in sitemap) ----------
 thanks_head = head('Thanks — your data packs — Tavino',
@@ -492,6 +550,7 @@ home = f'''{head('Tavino — China sourcing, verified', home_desc, '/', 'assets/
 <section class="about">
 <h2>What Tavino does</h2>
 <p>Tavino is a China sourcing research desk for importers and online sellers. We verify suppliers before money moves, keep dated price snapshots of 1688 and Alibaba listings, and mine public import records to find who is really buying what. The research is published here first, and readers who want it in their inbox can subscribe at the bottom of any article.</p>
+<p>Ordering from a Chinese supplier you have never paid before? <a href="{BASE}/verify/">Get them checked first</a> — a desk verification with a clear verdict, before any deposit moves.</p>
 </section>
 </main>
 {FOOTER}'''
@@ -501,7 +560,7 @@ with open(os.path.join(ROOT, 'index.html'), 'w') as f:
 
 # ---------- sitemap + robots ----------
 urls = ['/', '/who-supplies-americas-lighting/', '/who-supplies-americas-auto-parts/', '/who-supplies-americas-furniture/', '/who-supplies-americas-plastics/',
-        '/verify-1688-supplier/', '/us-import-data-buyers/', '/chinese-suv-landed-cost/']
+        '/verify-1688-supplier/', '/us-import-data-buyers/', '/chinese-suv-landed-cost/', '/verify/']
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
 for u in urls:
     sm += f'<url><loc>{BASE}{u}</loc></url>\n'
